@@ -64,28 +64,17 @@ const galleryItems = [
   },
 ];
 
-{/* <li class="gallery__item">
-  <a
-    class="gallery__link"
-    href="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-  >
-    <img
-      class="gallery__image"
-      src="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546__340.jpg"
-      data-source="https://cdn.pixabay.com/photo/2010/12/13/10/13/tulips-2546_1280.jpg"
-      alt="Tulips"
-    />
-  </a>
-</li> */}
 
-// Создание и рендер разметки по массиву данных galleryItems из app.js и предоставленному шаблону.
+// - Создание и рендер разметки по массиву данных galleryItems из app.js и предоставленному шаблону.
 
 const imagesContainer = document.querySelector('.js-gallery');
+const lightboxEl = document.querySelector('.js-lightbox');
+const closeModalBtn = document.querySelector('[data-action="close-lightbox"]');
+const openModalImage = document.querySelector('.lightbox__image');
+
 const galleryMarkup = createGalleryMarkup(galleryItems);
 
 imagesContainer.insertAdjacentHTML('afterbegin', galleryMarkup);
-
-imagesContainer.addEventListener('click',); // add event
 
 function createGalleryMarkup(galleryItems) {
   return galleryItems.map(({ preview, description, original }) => {
@@ -105,21 +94,43 @@ function createGalleryMarkup(galleryItems) {
     </li>
     `;
   })
-    .join(' ');
-  
-  
+    .join('');
 }
 
 
-// Реализация делегирования на галерее ul.js-gallery и получение url большого изображения
-
-
-
+// - Реализация делегирования на галерее ul.js-gallery и получение url большого изображения
 // - Открытие модального окна по клику на элементе галереи.
 // - Подмена значения атрибута src элемента img.lightbox__image.
+
+imagesContainer.addEventListener('click', onOpenModal);
+
+function onOpenModal(event) {
+  if (event.target.nodeName !== 'IMG') {
+    return;
+  }
+
+  event.preventDefault();
+
+  lightboxEl.classList.add('is-open');
+
+  openModalImage.src = event.target.dataset.source;
+  openModalImage.alt = event.target.alt;
+}
+
+
 // - Закрытие модального окна по клику на кнопку button[data-action="close-lightbox"].
 // - Очистка значения атрибута src элемента img.lightbox__image. 
-//  Это необходимо для того, чтобы при следующем открытии модального окна,
-//  пока грузится изображение, мы не видели предыдущее.
+
+closeModalBtn.addEventListener('click', onCloseModal);
+
+function onCloseModal() {
+  lightboxEl.classList.remove('is-open');
+
+  openModalImage.src = '';
+  openModalImage.alt = '';
+}
 
 
+// - Закрытие модального окна по клику на div.lightbox__overlay.
+// - Закрытие модального окна по нажатию клавиши ESC.
+// - Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
