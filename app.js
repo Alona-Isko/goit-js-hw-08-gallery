@@ -71,6 +71,7 @@ const imagesContainer = document.querySelector('.js-gallery');
 const lightboxEl = document.querySelector('.js-lightbox');
 const closeModalBtn = document.querySelector('[data-action="close-lightbox"]');
 const openModalImage = document.querySelector('.lightbox__image');
+const modalOverlay = document.querySelector('.lightbox__overlay');
 
 const galleryMarkup = createGalleryMarkup(galleryItems);
 
@@ -115,6 +116,8 @@ function onOpenModal(event) {
 
   openModalImage.src = event.target.dataset.source;
   openModalImage.alt = event.target.alt;
+
+  window.addEventListener('keydown', onEscapePress);
 }
 
 
@@ -128,9 +131,30 @@ function onCloseModal() {
 
   openModalImage.src = '';
   openModalImage.alt = '';
+
+  window.removeEventListener('keydown', onEscapePress);
 }
 
 
 // - Закрытие модального окна по клику на div.lightbox__overlay.
+
+modalOverlay.addEventListener('click', onOverlayClick);
+
+function onOverlayClick(event) {
+  if (event.currentTarget === event.target) {
+    onCloseModal();
+  }
+}
+
+
 // - Закрытие модального окна по нажатию клавиши ESC.
+
+function onEscapePress(event) {
+  if (event.code === 'Escape') {
+    onCloseModal();
+  }
+}
+
+
 // - Пролистывание изображений галереи в открытом модальном окне клавишами "влево" и "вправо".
+
